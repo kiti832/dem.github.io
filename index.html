@@ -32,27 +32,126 @@
 </body>
 </html>
 <h2> 21 января, 2026</h2>
-<!-- Футер -->
-<footer style="
-  margin-top: 50px;
-  padding: 20px;
-  background-color: #2c3e50;
-  color: #ecf0f1;
-  text-align: center;
-  font-size: 14px;
-  border-radius: 8px;
-">
-  <p>🔐 Учебный пример шифрования RSA | Только для образовательных целей</p>
-  <p>
-    <strong>Важно:</strong> 
-    Данный инструмент использует маленькие ключи (n = 3233) и не предназначен для реальной защиты данных.
-  </p>
-  <p>
-    © <span id="year">2026</span> • Криптография для начинающих
-  </p>
-</footer>
+<!-- Учебный пример RSA -->
+<div id="rsa-demo" style="max-width: 800px; margin: 30px auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px; font-family: Arial, sans-serif;">
+  <h2>🔐 Учебный пример RSA</h2>
+  <p>Используются фиксированные маленькие простые числа: <code>p = 61</code>, <code>q = 53</code></p>
+
+  <h3>1. Ключи</h3>
+  <pre id="keys-rsa" style="background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto;">Генерация...</pre>
+
+  <h3>2. Зашифровать сообщение</h3>
+  <p>Введите текст (только заглавные латинские буквы A–Z, без пробелов, макс. 2 символа):</p>
+  <input type="text" id="messageInput" maxlength="2" placeholder="Например: HI" value="HI" style="width: 100%; padding: 8px; margin: 5px 0; box-sizing: border-box;" />
+  <button onclick="encryptMessage()" style="margin: 10px 5px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Зашифровать</button>
+
+  <h3>3. Расшифровать</h3>
+  <button onclick="decryptMessage()" style="margin: 10px 5px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Расшифровать последнее сообщение</button>
+
+  <div class="result" style="margin-top: 20px; padding: 10px; background: #e8f4fc; border-left: 4px solid #3498db;">
+    <p><strong>Исходное:</strong> <span id="original">—</span></p>
+    <p><strong>Число m:</strong> <span id="mVal">—</span></p>
+    <p><strong>Шифротекст c:</strong> <span id="cipher">—</span></p>
+    <p><strong>Расшифровано:</strong> <span id="decrypted">—</span></p>
+  </div>
+
+  <div style="margin-top: 30px; padding: 15px; background-color: #2c3e50; color: #ecf0f1; text-align: center; font-size: 14px; border-radius: 8px;">
+    <p>🔐 Учебный пример шифрования RSA | Только для образовательных целей</p>
+    <p><strong>Важно:</strong> Данный инструмент использует маленькие ключи (n = 3233) и <u>не предназначен</u> для реальной защиты данных.</p>
+    <p>© <span id="current-year-rsa">2026</span> • Криптография для начинающих</p>
+  </div>
+</div>
 
 <script>
-  // Автоматически обновляет год
-  document.getElementById('year').textContent = new Date().getFullYear();
+// Уникальные имена функций и переменных, чтобы не конфликтовать с другими скриптами
+function modPowRSA(base, exp, mod) {
+  let result = 1n;
+  base = BigInt(base) % BigInt(mod);
+  exp = BigInt(exp);
+  mod = BigInt(mod);
+  while (exp > 0n) {
+    if (exp % 2n === 1n) {
+      result = (result * base) % mod;
+    }
+    exp = exp >> 1n;
+    base = (base * base) % mod;
+  }
+  return result;
+}
+
+function textToNumberRSA(text) {
+  let numStr = '';
+  for (let char of text.toUpperCase()) {
+    if (char >= 'A' && char <= 'Z') {
+      let code = char.charCodeAt(0) - 64;
+      numStr += code.toString().padStart(2, '0');
+    }
+  }
+  return numStr ? BigInt(numStr) : 0n;
+}
+
+function numberToTextRSA(num) {
+  let str = num.toString().padStart(2, '0');
+  if (str.length % 2 === 1) str = '0' + str;
+  let text = '';
+  for (let i = 0; i < str.length; i += 2) {
+    let pair = str.substr(i, 2);
+    let code = parseInt(pair, 10);
+    if (code >= 1 && code <= 26) {
+      text += String.fromCharCode(64 + code);
+    }
+  }
+  return text;
+}
+
+// Параметры RSA
+const p_RSA = 61n;
+const q_RSA = 53n;
+const n_RSA = p_RSA * q_RSA;
+const e_RSA = 17n;
+const d_RSA = 2753n;
+
+// Отображение ключей
+document.getElementById('keys-rsa').textContent = 
+  `Открытый ключ (e, n): (${e_RSA}, ${n_RSA})\n` +
+  `Закрытый ключ (d, n): (${d_RSA}, ${n_RSA})`;
+
+let lastCipher_RSA = null;
+
+function encryptMessage() {
+  const input = document.getElementById('messageInput').value.trim();
+  if (!/^[A-Z]{1,2}$/i.test(input)) {
+    alert('Пожалуйста, введите 1–2 заглавные латинские буквы (A–Z).');
+    return;
+  }
+
+  const m = textToNumberRSA(input);
+  if (m >= n_RSA) {
+    alert(`Число слишком велико! Должно быть < ${n_RSA}.`);
+    return;
+  }
+
+  const c = modPowRSA(m, e_RSA, n_RSA);
+  lastCipher_RSA = c;
+
+  document.getElementById('original').textContent = input.toUpperCase();
+  document.getElementById('mVal').textContent = m.toString();
+  document.getElementById('cipher').textContent = c.toString();
+  document.getElementById('decrypted').textContent = '—';
+}
+
+function decryptMessage() {
+  if (lastCipher_RSA === null) {
+    alert('Сначала зашифруйте сообщение!');
+    return;
+  }
+
+  const m = modPowRSA(lastCipher_RSA, d_RSA, n_RSA);
+  const text = numberToTextRSA(m);
+
+  document.getElementById('decrypted').textContent = text;
+}
+
+// Обновление года
+document.getElementById('current-year-rsa').textContent = new Date().getFullYear();
 </script>
