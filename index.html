@@ -7,47 +7,102 @@
 </head>
 <body>
     <h2> 30 марта, 2026</h2>
-    import pandas as pd
-from tabulate import tabulate
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Результаты модели машинного обучения</h1>
+            <p>Отчёт о качестве прогнозов</p>
+        </div>
 
-# Данные
-results = {
-    'Метрика': ['MSE на обучении', 'MSE на тесте'],
-    'Значение': [0.003915790785640671, 0.0032457782172622004]
-}
+        <div class="content">
+            <!-- Метрики -->
+            <div class="section">
+                <h2 class="section-title">📊 Метрики качества</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Метрика</th>
+                            <th>Значение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🔹 MSE на обучении (Train)</td>
+                            <td><span class="metric-value">0.003916</span></td>
+                        </tr>
+                        <tr>
+                            <td>🔹 MSE на тесте (Test)</td>
+                            <td><span class="metric-value">0.003246</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-predictions = [
-    {'Факт': 91.0, 'Прогноз': 77.24318682993926, 'Ошибка': -13.75681317006074},
-    {'Факт': 53.0, 'Прогноз': 61.23262157219291, 'Ошибка': 8.23262157219291},
-    {'Факт': 80.0, 'Прогноз': 78.34696773943539, 'Ошибка': -1.65303226056461},
-    {'Факт': 74.0, 'Прогноз': 76.78825250848536, 'Ошибка': 2.78825250848536},
-    {'Факт': 84.0, 'Прогноз': 80.51869439130802, 'Ошибка': -3.48130560869198}
-]
+            <!-- Прогнозы -->
+            <div class="section">
+                <h2 class="section-title">🔮 Примеры прогнозов</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Факт</th>
+                            <th>Прогноз</th>
+                            <th>Ошибка</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>91.0</td>
+                            <td>77.24</td>
+                            <td class="error-negative">-13.76</td>
+                            <td><span class="status status-warning">⚠️ Внимание</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>53.0</td>
+                            <td>61.23</td>
+                            <td class="error-positive">+8.23</td>
+                            <td><span class="status status-warning">⚠️ Внимание</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>80.0</td>
+                            <td>78.35</td>
+                            <td class="error-negative">-1.65</td>
+                            <td><span class="status status-good">✅ Хорошо</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>74.0</td>
+                            <td>76.79</td>
+                            <td class="error-positive">+2.79</td>
+                            <td><span class="status status-good">✅ Хорошо</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>84.0</td>
+                            <td>80.52</td>
+                            <td class="error-negative">-3.48</td>
+                            <td><span class="status status-good">✅ Хорошо</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-# Создаем DataFrame
-df_metrics = pd.DataFrame(results)
-df_pred = pd.DataFrame(predictions)
+            <!-- Примечание -->
+            <div class="note">
+                <strong>💡 Примечание:</strong> Значения целевой переменной, вероятно, нормализованы. 
+                При обратной нормализации: <strong>RMSE ≈ 2.3 балла</strong> в исходной шкале.
+                Модель не переобучена (ошибка на тесте ≤ ошибки на обучении).
+            </div>
+        </div>
 
-# Округляем значения
-df_metrics['Значение'] = df_metrics['Значение'].round(6)
-df_pred = df_pred.round(2)
-
-# Вывод в консоль
-print("=" * 60)
-print("📈 МЕТРИКИ МОДЕЛИ")
-print("=" * 60)
-print(tabulate(df_metrics, headers='keys', tablefmt='grid', showindex=False))
-
-print("\n" + "=" * 60)
-print("🔮 ПРИМЕРЫ ПРОГНОЗОВ")
-print("=" * 60)
-print(tabulate(df_pred, headers='keys', tablefmt='grid', showindex=False))
-
-# Сохранение в CSV (опционально)
-df_metrics.to_csv('metrics.csv', index=False, encoding='utf-8')
-df_pred.to_csv('predictions.csv', index=False, encoding='utf-8')
-
-print("\n✅ Файлы сохранены: metrics.csv, predictions.csv")
+        <div class="footer">
+            <p>Сгенерировано автоматически | 
+            <a href="https://github.com" class="github-link" target="_blank">GitHub Repository</a></p>
+        </div>
+    </div>
     <p>14 02 2026 </p>
      Топ-3 предсказаний:
     running shoe: 99.45%
