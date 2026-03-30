@@ -6,6 +6,48 @@
     <title>Мой блог</title>
 </head>
 <body>
+    <h2> 30 марта, 2026</h2>
+    import pandas as pd
+from tabulate import tabulate
+
+# Данные
+results = {
+    'Метрика': ['MSE на обучении', 'MSE на тесте'],
+    'Значение': [0.003915790785640671, 0.0032457782172622004]
+}
+
+predictions = [
+    {'Факт': 91.0, 'Прогноз': 77.24318682993926, 'Ошибка': -13.75681317006074},
+    {'Факт': 53.0, 'Прогноз': 61.23262157219291, 'Ошибка': 8.23262157219291},
+    {'Факт': 80.0, 'Прогноз': 78.34696773943539, 'Ошибка': -1.65303226056461},
+    {'Факт': 74.0, 'Прогноз': 76.78825250848536, 'Ошибка': 2.78825250848536},
+    {'Факт': 84.0, 'Прогноз': 80.51869439130802, 'Ошибка': -3.48130560869198}
+]
+
+# Создаем DataFrame
+df_metrics = pd.DataFrame(results)
+df_pred = pd.DataFrame(predictions)
+
+# Округляем значения
+df_metrics['Значение'] = df_metrics['Значение'].round(6)
+df_pred = df_pred.round(2)
+
+# Вывод в консоль
+print("=" * 60)
+print("📈 МЕТРИКИ МОДЕЛИ")
+print("=" * 60)
+print(tabulate(df_metrics, headers='keys', tablefmt='grid', showindex=False))
+
+print("\n" + "=" * 60)
+print("🔮 ПРИМЕРЫ ПРОГНОЗОВ")
+print("=" * 60)
+print(tabulate(df_pred, headers='keys', tablefmt='grid', showindex=False))
+
+# Сохранение в CSV (опционально)
+df_metrics.to_csv('metrics.csv', index=False, encoding='utf-8')
+df_pred.to_csv('predictions.csv', index=False, encoding='utf-8')
+
+print("\n✅ Файлы сохранены: metrics.csv, predictions.csv")
     <p>14 02 2026 </p>
      Топ-3 предсказаний:
     running shoe: 99.45%
